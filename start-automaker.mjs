@@ -4,7 +4,7 @@
  * Works on Windows (CMD, PowerShell, Git Bash) and Unix (macOS, Linux)
  */
 
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import { existsSync } from 'fs';
 import { platform } from 'os';
 import { fileURLToPath } from 'url';
@@ -38,12 +38,12 @@ function findBashOnWindows() {
     if (bashPath === 'bash.exe') {
       // Check if bash is in PATH
       try {
-        const result = spawn.sync?.('where', ['bash.exe'], { stdio: 'pipe' });
+        const result = spawnSync('where', ['bash.exe'], { stdio: 'pipe' });
         if (result?.status === 0) {
           return 'bash.exe';
         }
-      } catch {
-        // where command failed, continue checking
+      } catch (err) {
+        // where command failed, continue checking other paths
       }
     } else if (existsSync(bashPath)) {
       return bashPath;
@@ -101,7 +101,7 @@ function runBashScript() {
       // Ensure proper terminal handling
       TERM: process.env.TERM || 'xterm-256color',
     },
-    // On Windows, we need to use shell for proper signal handling
+    // shell: false ensures signals are forwarded directly to the child process
     shell: false,
   });
 

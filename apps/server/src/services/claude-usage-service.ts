@@ -47,22 +47,6 @@ export class ClaudeUsageService {
   }
 
   /**
-   * Kill a PTY process with platform-specific handling.
-   * Windows doesn't support Unix signals like SIGTERM, so we call kill() without arguments.
-   * On Unix-like systems (macOS, Linux), we can specify the signal.
-   *
-   * @param ptyProcess - The PTY process to kill
-   * @param signal - The signal to send on Unix-like systems (default: 'SIGTERM')
-   */
-  private killPtyProcess(ptyProcess: pty.IPty, signal: string = 'SIGTERM'): void {
-    if (this.isWindows) {
-      ptyProcess.kill();
-    } else {
-      ptyProcess.kill(signal);
-    }
-  }
-
-  /**
    * Check if Claude CLI is available on the system
    */
   async isAvailable(): Promise<boolean> {
